@@ -1,5 +1,5 @@
 class EligibilityService {
-  defineEligibility(value, condition) {
+  _defineEligibility(value, condition) {
     if (typeof condition === 'object') {
       for (const [key, keyValue] of Object.entries(condition)) {
         switch (key) {
@@ -19,11 +19,11 @@ class EligibilityService {
             if (!keyValue.includes(value)) return false;
             break;
           case 'and':
-            if (!Object.entries(keyValue).every(([op, val]) => this.defineEligibility(value, { [op]: val })))
+            if (!Object.entries(keyValue).every(([op, val]) => this._defineEligibility(value, { [op]: val })))
               return false;
             break;
           case 'or':
-            if (!Object.entries(keyValue).some(([op, val]) => this.defineEligibility(value, { [op]: val })))
+            if (!Object.entries(keyValue).some(([op, val]) => this._defineEligibility(value, { [op]: val })))
               return false;
             break;
           default:
@@ -53,14 +53,14 @@ class EligibilityService {
           return false;
 
         if (Array.isArray(cartValue)) {
-          if (!cartValue.some(item => this.defineEligibility(item[k], condition)))
+          if (!cartValue.some(item => this._defineEligibility(item[k], condition)))
             return false;
           cartValue = cartValue.map(cartVal => cartVal[k]);
         } else {
           cartValue = cartValue[k];
         }
       }
-      if (!Array.isArray(cartValue) && !this.defineEligibility(cartValue, condition))
+      if (!Array.isArray(cartValue) && !this._defineEligibility(cartValue, condition))
         return false;
     }
     return true;
